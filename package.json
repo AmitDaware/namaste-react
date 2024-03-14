@@ -1,0 +1,28 @@
+{
+  "name": "namastereact",
+  "version": "1.0.0",
+  "description": "This is Namaste React taught by Akshay Saini",
+  "main": "App.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmitDaware/namaste-react.git"
+  },
+  "keywords": [],
+  "author": "amit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmitDaware/namaste-react/issues"
+  },
+  "homepage": "https://github.com/AmitDaware/namaste-react#readme",
+  "devDependencies": {
+    "parcel": "^2.10.3",
+    "process": "^0.11.10"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
