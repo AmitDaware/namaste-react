@@ -1,40 +1,102 @@
-// part one  start----------------------------
+import React, { useState, lazy, Suspense, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+import Header from "./src/components/Header";
+import Body from "./src/components/Body";
+import ContactUs from "./src/components/ContactUs";
+import Error from "./src/components/Error";
+import RestaurantMenu from "./src/components/RestaurantMenu";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import UserContext from "./src/utils/UserContext";
+import { Provider } from "react-redux";
+import appStore from "./src/utils/appStore";
+import Cart from "./src/components/Cart";
 
-// const heading = React.createElement(
-//   "h1",
-//   { id: "heading", class: "head" },//this object is used for  giving attributes to our elements.
-//   "Hello World form react!"
-// );
+//This type of loading the content is also called as
+//Chunking,
+//Lazy loading,
+//Code splitting,
+//Dynamic imports,
+//On-demand loading,
+//Just-in-time loading,
+//Asynchronous loading,
+//Deferred loading,
+//Incremental loading,
+//Progressive loading,
+//Streaming loading,
+//Streaming rendering,
 
-// const root = ReactDOM.createRoot(document.getElementById("root"));
+const Grocery = lazy(() => {
+  return import("./src/components/Grocery");
+});
+const About = lazy(() => {
+  return import("./src/components/About");
+});
 
-// root.render(heading)
+const AppLayout = () => {
+  const [userName, setUserName] = useState();
 
-//part one end ----------------------------------
+  useEffect(()=>{
+    // Make an api call and send username and password
+    const data = {
+      name : "Amit Daware"
+    };
+    setUserName(data.name);
+  },[])
 
-// part TWO start-------------creating the nested HTML structure inside react ------------------
-
-{
-    /* <div id="parent">
-    <div id="child">
-      <h1 id="heading">Iam a h1 tag</h1>
-      <h2 id="heading2">Iam a h2 tag</h2>
-    </div>
-  </div>; */
-  }
-  
-  const parent = React.createElement(
-    "div",
-    { id: "parent" },[ React.createElement("div", { id: "child1" }, [
-      React.createElement("h1", { id: "heading" }, "Iam a h1 tag"),
-      React.createElement("h2", { id: "heading2" }, "Iam a h2 tag"),
-    ])],
-    React.createElement("div", { id: "child2" }, [
-      React.createElement("h1", { id: "heading" }, "Iam a h1 tag"),
-      React.createElement("h2", { id: "heading2" }, "Iam a h2 tag"),
-    ])
+  return (
+    <Provider store = {appStore}>
+    <UserContext.Provider value={{loggedInUser : userName, setUserName}}>
+      <div className="app">
+        <Header />
+        <Outlet />
+      </div> 
+    </UserContext.Provider>
+    </Provider>
   );
-  
-  const root = ReactDOM.createRoot(document.getElementById("root"));
-  root.render(parent);
-  
+};
+
+const appRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Body />,
+      },
+      {
+        path: "/about",
+        element: (
+          <Suspense fallback={<h1>Loading......</h1>}>
+            <About />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/contactUs",
+        element: <ContactUs />,
+      },
+      {
+        path: "/grocery",
+        element: (
+          <Suspense fallback={<h1>Loading......</h1>}>
+            <Grocery />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/restaurants/:resId",
+        element: <RestaurantMenu />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
+      }
+    ],
+    errorElement: <Error />,
+  },
+]);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(<RouterProvider router={appRouter} />);
